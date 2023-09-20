@@ -5,6 +5,7 @@ import anime from 'animejs/lib/anime.es.js';
 
 export function Modal(props: IModal.ComponentProps) {
   const {
+    id,
     isShow,
     defaultWidth,
     defaultHeight,
@@ -37,7 +38,7 @@ export function Modal(props: IModal.ComponentProps) {
   const startShowAnimation = useCallback((onComplete?: () => void) => {
     if (modalContainerRef.current === null) return;
     
-    if (typeof onShowStart === 'function') onShowStart();
+    if (typeof onShowStart === 'function') onShowStart({ id });
 
     hideAnimation.current?.pause();
     startAnimation.current?.pause();
@@ -48,15 +49,15 @@ export function Modal(props: IModal.ComponentProps) {
       easing: 'easeOutQuint',
       complete(anim) {
         if (typeof onComplete === 'function') onComplete();
-        if (typeof onShowComplete === 'function') onShowComplete();
+        if (typeof onShowComplete === 'function') onShowComplete({ id });
       },
     });
-  }, [onShowComplete, onShowStart, showDuration]);
+  }, [id, onShowComplete, onShowStart, showDuration]);
 
   const startHideAnimation = useCallback((onComplete?: () => void) => {
     if (modalContainerRef.current === null) return;
 
-    if (typeof onHideStart === 'function') onHideStart();
+    if (typeof onHideStart === 'function') onHideStart({ id });
 
     hideAnimation.current?.pause();
     startAnimation.current?.pause();
@@ -67,10 +68,10 @@ export function Modal(props: IModal.ComponentProps) {
       easing: 'easeOutQuint',
       complete(anim) {
         if (typeof onComplete === 'function') onComplete();
-        if (typeof onHideComplete === 'function') onHideComplete();
+        if (typeof onHideComplete === 'function') onHideComplete({ id });
       },
     });
-  }, [hideDuration, onHideComplete, onHideStart]);
+  }, [hideDuration, id, onHideComplete, onHideStart]);
 
   useEffect(() => {
     if (isShow) {
@@ -101,11 +102,11 @@ export function Modal(props: IModal.ComponentProps) {
       {
         isRender ? 
         <>
-          <div className={styles['modal-container']} ref={modalContainerRef}>
+          <div className={styles['modal-container']} ref={modalContainerRef} id={id}>
             <div 
               className={styles['background']} 
               onClick={() => {
-                if (typeof onBackgroundClick === 'function') onBackgroundClick();
+                if (typeof onBackgroundClick === 'function') onBackgroundClick({ id });
               }}>
 
             </div>
