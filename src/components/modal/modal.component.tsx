@@ -113,7 +113,7 @@ export function Modal(props: IModal.ComponentProps) {
             <div 
               className={[
                 styles['modal'],
-                isEnableScroll !== false ? styles['scroll'] : '',
+                isEnableScroll !== false ? styles['scroll'] : styles['disable-scroll'],
               ].join(' ')}
               style={{
                 width: modalWidth,

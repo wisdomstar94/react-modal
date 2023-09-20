@@ -28,3 +28,6 @@
 .modal-container .modal.scroll {
   overflow-y: scroll;
 }
+.modal-container .modal.disable-scroll {
+  overflow-y: hidden;
+}
