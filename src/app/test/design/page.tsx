@@ -37,7 +37,7 @@ export default function Page() {
           console.log('@onModalHideEnd');
         }}
         >
-        <div className="w-full h-full flex flex-col relative overflow-hidden rounded-lg">
+        <div className="w-full h-full flex flex-col relative overflow-hidden rounded-lg bg-white">
           <div className="w-full h-[56px] flex-shrink-0 box-border p-4 bg-blue-500 text-white">
             [안내]
           </div>
@@ -82,8 +82,4 @@ export default function Page() {
       </Modal>
     </>
   );
-}
-
-function className(ss: string[]) {
-  return "";
 }

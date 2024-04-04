@@ -67,6 +67,7 @@ export function Modal(props: Props) {
           /* container */
           <div 
             key={modalId}
+            data-key={modalId}
             className={styles['modal-root-contaienr']}
             >
             {/* background */}
