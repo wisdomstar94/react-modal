@@ -1,132 +1,94 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { IModal } from './modal.interface';
+import { useEffect, useRef } from "react";
+import { Props } from "./modal.interface";
 import styles from './modal.module.css';
-import anime from 'animejs/lib/anime.es.js';
+import { Transition } from '@wisdomstar94/react-transition';
 
-export function Modal(props: IModal.ComponentProps) {
-  const {
-    id,
-    isShow,
-    defaultWidth,
-    defaultHeight,
-    isBackgroundTransperant,
-    isEnableScroll,
-    children,
+export function Modal(props: Props) {
+  const openTimeout = 300;
+  const hideTimeout = 300;
+  const { isShow, setIsShow } = props;
+  const modalId = props.modalId;
+  const modalClassName = props.modalClassName;
+  const modalBgClassName = props.modalBgClassName;
+  const modalWidth = props.modalWidth ?? 600;
+  const modalHeight = props.modalHeight ?? 360;
+  const modalOuterPaddingVertical = props.modalOuterPaddingVertical ?? 24;
+  const modalOuterPaddingHorizontal = props.modalOuterPaddingHorizontal ?? 24;
+  const onModalOpenEndTimer = useRef<NodeJS.Timeout>();
+  const onModalHideEndTimer = useRef<NodeJS.Timeout>();
 
-    onBackgroundClick,
-    onShowStart,
-    onShowComplete,
-    onHideStart,
-    onHideComplete,
-  } = props;
-
-  const modalWidth = useMemo(() => `${defaultWidth}px`, [defaultWidth]);
-  const modalHeight = useMemo(() => {
-    if (defaultHeight === undefined) return `auto`;
-    return `${defaultHeight}px`;
-  }, [defaultHeight]);
-
-  const showDuration = useMemo(() => props.showDuration ?? 400, [props.showDuration]);
-  const hideDuration = useMemo(() => props.hideDuration ?? 400, [props.hideDuration]);
-
-  const [isRender, setIsRender] = useState<boolean>(false);
-  const modalContainerRef = useRef<HTMLDivElement>(null);
-
-  const hideAnimation = useRef<anime.AnimeInstance>();
-  const startAnimation = useRef<anime.AnimeInstance>();
-
-  const startShowAnimation = useCallback((onComplete?: () => void) => {
-    if (modalContainerRef.current === null) return;
-    
-    if (typeof onShowStart === 'function') onShowStart({ id });
-
-    hideAnimation.current?.pause();
-    startAnimation.current?.pause();
-    startAnimation.current = anime({
-      targets: [modalContainerRef.current],
-      opacity: 1,
-      duration: showDuration,
-      easing: 'easeOutQuint',
-      complete(anim) {
-        if (typeof onComplete === 'function') onComplete();
-        if (typeof onShowComplete === 'function') onShowComplete({ id });
-      },
-    });
-  }, [id, onShowComplete, onShowStart, showDuration]);
-
-  const startHideAnimation = useCallback((onComplete?: () => void) => {
-    if (modalContainerRef.current === null) return;
-
-    if (typeof onHideStart === 'function') onHideStart({ id });
-
-    hideAnimation.current?.pause();
-    startAnimation.current?.pause();
-    hideAnimation.current = anime({
-      targets: [modalContainerRef.current],
-      opacity: 0,
-      duration: hideDuration,
-      easing: 'easeOutQuint',
-      complete(anim) {
-        if (typeof onComplete === 'function') onComplete();
-        if (typeof onHideComplete === 'function') onHideComplete({ id });
-      },
-    });
-  }, [hideDuration, id, onHideComplete, onHideStart]);
+  function onModalBgClick() {
+    if (typeof props.onModalBgClick === 'function') {
+      props.onModalBgClick();
+    }
+  }
 
   useEffect(() => {
+    if (isShow === undefined) return;
+
+    clearTimeout(onModalOpenEndTimer.current);
+    clearTimeout(onModalHideEndTimer.current);
     if (isShow) {
-      // 보여져야 함..
-      if (!isRender) {
-        setIsRender(true);
-      } else {
-        startShowAnimation();
+      if (typeof props.onModalOpenStart === 'function') {
+        props.onModalOpenStart();
       }
+      onModalOpenEndTimer.current = setTimeout(() => {
+        if (typeof props.onModalOpenEnd === 'function') {
+          props.onModalOpenEnd();
+        }
+      }, openTimeout);
     } else {
-      // 가려져야 함..
-      startHideAnimation(() => {
-        setIsRender(false);
-      });
+      if (typeof props.onModalHideStart === 'function') {
+        props.onModalHideStart();
+      }
+      onModalHideEndTimer.current = setTimeout(() => {
+        if (typeof props.onModalHideEnd === 'function') {
+          props.onModalHideEnd();
+        }
+      }, hideTimeout);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isShow]);
 
-  useEffect(() => {
-    if (isRender) {
-      startShowAnimation();
-    } 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isRender]);
-
   return (
     <>
-      {
-        isRender ? 
-        <>
-          <div className={styles['modal-container']} ref={modalContainerRef} id={id}>
+      <Transition
+        classNames={{
+          enter: styles['enter'],
+          leave: styles['leave'],
+        }}
+        timeouts={{
+          enter: openTimeout,
+          leave: hideTimeout,
+        }}
+        >
+        {
+          isShow ? 
+          /* container */
+          <div 
+            key={modalId}
+            className={styles['modal-root-contaienr']}
+            >
+            {/* background */}
             <div 
-              className={styles['background']} 
-              onClick={() => {
-                if (typeof onBackgroundClick === 'function') onBackgroundClick({ id });
-              }}>
-
-            </div>
-
+              className={[styles['background'], modalBgClassName ?? ''].join(' ')}
+              onClick={onModalBgClick} />
+            {/* modal */}
             <div 
-              className={[
-                styles['modal'],
-                isEnableScroll !== false ? styles['scroll'] : styles['disable-scroll'],
-              ].join(' ')}
+              className={[styles['modal'], modalClassName].join(' ')}
               style={{
-                width: modalWidth,
-                height: modalHeight,
-                backgroundColor: isBackgroundTransperant === true ? `rgba(255, 255, 255, 0)` : undefined,
-              }}>
-              { children }
+                width: `${modalWidth}px`,
+                height: `${modalHeight}px`,
+                maxWidth: `calc(100% - ${modalOuterPaddingHorizontal * 2}px)`,
+                maxHeight: `calc(100% - ${modalOuterPaddingVertical * 2}px)`,
+              }}
+              >
+              { props.children }
             </div>
           </div>
-        </> 
-        : null
-      }
+          : null
+        }
+      </Transition>
     </>
   );
 }

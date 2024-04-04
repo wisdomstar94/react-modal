@@ -1,12 +1,12 @@
 {
   "name": "@wisdomstar94/react-modal",
-  "version": "0.0.3",
+  "version": "0.0.4-test.1",
   "license": "MIT",
   "private": false,
   "scripts": {
     "dev": "next dev -p 3330",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3330",
     "lint": "next lint",
     "pack:build": "node ./build.esbuild.js",
     "pack:build:tsc": "tsc --project ./tsconfig.package.json"
@@ -20,21 +20,20 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@types/node": "20.4.2",
-    "@types/react": "^18.2.15",
-    "@types/react-dom": "^18.2.7",
-    "animejs": "^3.2.1",
-    "autoprefixer": "10.4.14",
-    "eslint": "8.45.0",
-    "eslint-config-next": "13.4.10",
-    "next": "13.4.10",
-    "postcss": "8.4.26",
+    "@types/node": "20.12.4",
+    "@types/react": "^18.2.74",
+    "@types/react-dom": "^18.2.24",
+    "@wisdomstar94/react-transition": "^0.1.0",
+    "autoprefixer": "10.4.19",
+    "esbuild": "^0.20.2",
+    "esbuild-css-modules-plugin": "^3.1.0",
+    "eslint": "8.57.0",
+    "eslint-config-next": "14.1.4",
+    "next": "14.1.4",
+    "postcss": "8.4.38",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "tailwindcss": "3.3.3",
-    "typescript": "5.1.6",
-    "@types/animejs": "^3.1.7",
-    "esbuild": "^0.18.20",
-    "esbuild-css-modules-plugin": "^2.7.1"
+    "tailwindcss": "3.4.3",
+    "typescript": "5.4.3"
   }
 }

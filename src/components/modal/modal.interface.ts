@@ -1,44 +1,24 @@
-import { ReactNode } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 
-export declare namespace IModal {
-  export interface CommonParams {
-    id: string | undefined;
-  }
+export interface Props {
+  modalId: string;
+  modalBgClassName?: string;
+  modalClassName?: string;
 
-  export interface ComponentProps {
-    isShow: boolean;
-    id?: string;
-    defaultWidth: number;
-    defaultHeight?: number;
-    isBackgroundTransperant?: boolean;
-    isEnableScroll?: boolean;
+  isShow?: boolean;
+  setIsShow?: Dispatch<SetStateAction<boolean | undefined>>;
 
-    showDuration?: number;
-    hideDuration?: number;
-    
-    onShowStart?: (params: CommonParams) => void;
-    onShowComplete?: (params: CommonParams) => void;
-    onHideStart?: (params: CommonParams) => void;
-    onHideComplete?: (params: CommonParams) => void;
-    onBackgroundClick?: (params: CommonParams) => void;
+  modalWidth?: number;
+  modalHeight?: number;
 
-    children: ReactNode;
-  }
+  modalOuterPaddingVertical?: number;
+  modalOuterPaddingHorizontal?: number;
+  
+  onModalOpenStart?: () => void;
+  onModalOpenEnd?: () => void;
+  onModalHideStart?: () => void;
+  onModalHideEnd?: () => void;
+  onModalBgClick?: () => void;
 
-  export interface HookProps {
-    defaultWidth: number;
-    defaultHeight?: number;
-    isBackgroundTransperant?: boolean;
-    isEnableScroll?: boolean;
-    isHideWhenBackgroundTouch?: boolean;
-
-    showDuration?: number;
-    hideDuration?: number;
-
-    onShowStart?: () => void;
-    onShowComplete?: () => void;
-    onHideStart?: () => void;
-    onHideComplete?: () => void;
-    onBackgroundClick?: () => void;
-  }
+  children: ReactNode;
 }
